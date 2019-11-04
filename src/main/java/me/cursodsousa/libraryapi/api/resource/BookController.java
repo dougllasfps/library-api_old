@@ -31,22 +31,5 @@ public class BookController {
         return dtoConverter.toDTO(book);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationExceptions( MethodArgumentNotValidException ex ) {
-        return new ErrorResponse(ex.getBindingResult());
-    }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(BusinessException.class)
-    public ErrorResponse handleBusinessExceptions( BusinessException ex ) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.addError(ex.getMessage());
-        return errorResponse;
-    }
-
-    @ExceptionHandler(CustomResponseStatusException.class)
-    public ResponseEntity handleCustomResponseStatusException(CustomResponseStatusException ex ) {
-        return new ResponseEntity(ex.getContent(), ex.getStatus());
-    }
 }
