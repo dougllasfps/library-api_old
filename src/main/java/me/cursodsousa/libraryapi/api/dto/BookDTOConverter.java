@@ -1,9 +1,7 @@
 package me.cursodsousa.libraryapi.api.dto;
 
 import me.cursodsousa.libraryapi.model.entity.Book;
-import org.springframework.stereotype.Component;
 
-@Component
 public class BookDTOConverter implements DTOConverter<Book, BookDTO> {
 
     @Override

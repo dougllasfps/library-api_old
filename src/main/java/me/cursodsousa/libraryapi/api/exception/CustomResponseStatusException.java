@@ -13,4 +13,12 @@ public class CustomResponseStatusException extends RuntimeException{
         this.content = content;
         this.status = status;
     }
+
+    public static CustomResponseStatusException badRequest(Object content){
+        return new CustomResponseStatusException(content, HttpStatus.BAD_REQUEST);
+    }
+
+    public static CustomResponseStatusException notFound(Object content){
+        return new CustomResponseStatusException(content, HttpStatus.NOT_FOUND);
+    }
 }
