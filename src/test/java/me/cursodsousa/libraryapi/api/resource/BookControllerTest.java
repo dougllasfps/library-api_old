@@ -192,6 +192,37 @@ public class BookControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("Deve encontrar um livro pelo id")
+    public void obtainingBookByIdTest() throws Exception {
+
+        Book book = validBook();
+        BDDMockito.given( service.getById(anyLong()) ).willReturn( Optional.of(book) );
+
+        mvc
+                .perform(get(API_ROUTE.concat("/1")))
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath("id").value(book.getId()) )
+                .andExpect( jsonPath("title").value(book.getTitle()) )
+                .andExpect( jsonPath("author").value(book.getAuthor()) )
+                .andExpect( jsonPath("isbn").value(book.getIsbn()) )
+        ;
+    }
+
+    @Test
+    @DisplayName("Deve retornar erro quando não encontrar livro pelo id informado")
+    public void bookNotFoundForIdTest() throws Exception {
+
+        Book book = validBook();
+        BDDMockito.given( service.getById(anyLong()) ).willReturn( Optional.empty() );
+
+        mvc
+                .perform(get(API_ROUTE.concat("/1")))
+                .andExpect( status().isNotFound() )
+                .andExpect( jsonPath("errors[0]").value(messageSource.getMessage("book.id.not-found", null, null)) )
+        ;
+    }
+
 
     private BookDTO validDto() {
         return BookDTO.builder().title("A").author("A").isbn("A").build();

@@ -1,5 +1,6 @@
 package me.cursodsousa.libraryapi.api.resource;
 
+import lombok.extern.slf4j.Slf4j;
 import me.cursodsousa.libraryapi.api.dto.BookDTO;
 import me.cursodsousa.libraryapi.api.dto.BookDTOConverter;
 import me.cursodsousa.libraryapi.api.dto.DTOConverter;
@@ -18,6 +19,7 @@ import static me.cursodsousa.libraryapi.api.exception.CustomResponseStatusExcept
 
 @RestController
 @RequestMapping("/api/books")
+@Slf4j
 public class BookController {
 
     private final BookService service;
@@ -33,6 +35,7 @@ public class BookController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookDTO create( @Valid @RequestBody BookDTO dto ){
+        log.info("Creating a new book");
         Book book = dtoConverter.toEntity(dto);
         book = service.save(book);
         return dtoConverter.toDTO(book);
@@ -41,6 +44,7 @@ public class BookController {
     @PutMapping("{id}")
     public BookDTO update( @PathVariable Long id, @Valid @RequestBody BookDTO dto ){
         return service.getById(id).map( book -> {
+            log.info("updating book of id {} ", book.getId());
             BeanUtils.copyProperties(dto, book , "id");
             service.update(book);
             return dtoConverter.toDTO(book);
@@ -53,6 +57,7 @@ public class BookController {
         service
             .getById(id)
             .map( book -> {
+                log.info("deleting book of id {} ", book.getId());
                 service.delete(book.getId());
                 return Void.TYPE;
             })
@@ -61,9 +66,10 @@ public class BookController {
 
     @GetMapping("{id}")
     public BookDTO getById( @PathVariable Long id ){
+        log.info("finding book of id {} ", id);
         return service.getById(id)
                 .map( b -> dtoConverter.toDTO(b) )
-                .orElseThrow(() -> notFound( new ErrorResponse("Entidade não encontrada") ));
+                .orElseThrow(() -> notFound( new ErrorResponse(messageSource.getMessage("book.id.not-found", null, null)) ));
     }
 
 }
