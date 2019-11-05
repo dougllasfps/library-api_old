@@ -15,12 +15,12 @@ public class BookDTO {
 
     private Long id;
 
-    @NotEmpty(message = "{field.title.required}")
+    @NotEmpty(message = "{book.title.required}")
     private String title;
 
-    @NotEmpty(message = "{field.isbn.required}")
+    @NotEmpty(message = "{book.isbn.required}")
     private String isbn;
 
-    @NotEmpty(message = "{field.author.required}")
+    @NotEmpty(message = "{book.author.required}")
     private String author;
 }
