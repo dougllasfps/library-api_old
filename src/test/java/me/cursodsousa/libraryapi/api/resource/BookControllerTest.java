@@ -2,7 +2,6 @@ package me.cursodsousa.libraryapi.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.cursodsousa.libraryapi.api.dto.BookDTO;
-import me.cursodsousa.libraryapi.api.dto.BookDTOConverter;
 import me.cursodsousa.libraryapi.exception.BusinessException;
 import me.cursodsousa.libraryapi.model.entity.Book;
 import me.cursodsousa.libraryapi.service.BookService;
@@ -21,14 +20,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,7 +52,7 @@ public class BookControllerTest {
     public void creatingAValidBookTest() throws Exception {
         String json = new ObjectMapper().writeValueAsString(validBook());
 
-        BDDMockito.given(service.save(Mockito.any(Book.class))).willReturn(validBook());
+        given(service.save(Mockito.any(Book.class))).willReturn(validBook());
 
         MockHttpServletRequestBuilder request = post(API_ROUTE)
                 .accept(MediaType.APPLICATION_JSON)
@@ -81,8 +78,7 @@ public class BookControllerTest {
 
         String errorMessage = messageSource.getMessage("book.isbn.duplicado", null, null);
 
-        BDDMockito
-                .given(service.save(Mockito.any(Book.class)))
+        given(service.save(Mockito.any(Book.class)))
                 .willThrow(new BusinessException(errorMessage));
 
         MockHttpServletRequestBuilder request =
@@ -125,11 +121,9 @@ public class BookControllerTest {
         Book book = validBook();
         BookDTO dto = validDto();
 
-        BDDMockito
-              .given( service.getById(anyLong()) )
+        given( service.getById(anyLong()) )
               .willReturn(Optional.of(book));
-        BDDMockito
-              .given( service.update(book) )
+        given( service.update(book) )
               .willReturn(book);
 
         String json = new ObjectMapper().writeValueAsString(dto);
@@ -171,7 +165,7 @@ public class BookControllerTest {
     @DisplayName("Deve deletar um livro existente")
     public void bookDeleteTest() throws Exception {
 
-        BDDMockito.given( service.getById(anyLong()) ).willReturn( Optional.of(validBook()) );
+        given( service.getById(anyLong()) ).willReturn( Optional.of(validBook()) );
 
         mvc
             .perform(delete(API_ROUTE.concat("/1")))
@@ -183,7 +177,7 @@ public class BookControllerTest {
     @DisplayName("Deve lançar erro ao tentar deletar um livro inexistente")
     public void inexistentBookDeleteTest() throws Exception {
 
-        BDDMockito.given( service.getById(anyLong()) ).willReturn( Optional.empty() );
+        given( service.getById(anyLong()) ).willReturn( Optional.empty() );
 
         mvc
                 .perform(delete(API_ROUTE.concat("/1")))
@@ -197,7 +191,7 @@ public class BookControllerTest {
     public void obtainingBookByIdTest() throws Exception {
 
         Book book = validBook();
-        BDDMockito.given( service.getById(anyLong()) ).willReturn( Optional.of(book) );
+        given( service.getById(anyLong()) ).willReturn( Optional.of(book) );
 
         mvc
                 .perform(get(API_ROUTE.concat("/1")))
@@ -214,12 +208,12 @@ public class BookControllerTest {
     public void bookNotFoundForIdTest() throws Exception {
 
         Book book = validBook();
-        BDDMockito.given( service.getById(anyLong()) ).willReturn( Optional.empty() );
+        given( service.getById(anyLong()) ).willReturn( Optional.empty() );
 
         mvc
-                .perform(get(API_ROUTE.concat("/1")))
-                .andExpect( status().isNotFound() )
-                .andExpect( jsonPath("errors[0]").value(messageSource.getMessage("book.id.not-found", null, null)) )
+            .perform(get(API_ROUTE.concat("/1")))
+            .andExpect( status().isNotFound() )
+            .andExpect( jsonPath("errors[0]").value(messageSource.getMessage("book.id.not-found", null, null)) )
         ;
     }
 
