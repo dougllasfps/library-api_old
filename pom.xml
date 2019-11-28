@@ -53,6 +53,12 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>eu.hinsch</groupId>-->
+<!--			<artifactId>spring-boot-actuator-logview</artifactId>-->
+<!--			<version>0.2.12</version>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
